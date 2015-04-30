@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Busca Livros</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      //Conexão com o Servidor
+      var socket = io.connect('http://localhost:3000');
+
+      //Ao retornar os produtos
+      socket.on('retornaProdutos', function (json) {
+        json = JSON.parse(json);
+        document.getElementById('lista').innerHTML = '';
+        for(var i = 0; i < json.produto.length; i++) {
+          document.getElementById('lista').innerHTML += '<div>Nome : '+json.produto[i].nome+' | Preço R$ '+json.produto[i].preco+' | Quantidade em estoque: '+json.produto[i].quantidade+'</div>';
+        }
+      });
+
+      //Fazer Busca de Produtos
+      var procurar = function(){
+        var categoria = document.getElementById('categoria').value; 
+        socket.emit('buscarProdutos', {categoria: categoria}); 
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Buscar produtos</h1>
+    <select id="categoria">
+      <option value="1">Categoria 1</option>
+      <option value="2">Categoria 2</option>
+      <option value="3">Categoria 3</option>
+    </select>
+    <button id="procurar" onclick="procurar();">Procurar</button>
+    <hr>
+    <div id="lista">
+      
+    </div>
+  </body>
+</html>
